@@ -1,29 +1,40 @@
 RailsAdmin.config do |config|
 
+  require Rails.root.join('lib', 'rails_admin', 'rails_admin_pdf.rb')
+  RailsAdmin::Config::Actions.register(RailsAdmin::Config::Actions::Pdf)
+
   ### Popular gems integration
 
-  # == Devise ==
+  ## == Devise ==
   config.authenticate_with do
     warden.authenticate! scope: :user
   end
-  config.current_user_method(&:current_user)
+  config.current_user_method(&&current_user)
 
-  # == Cancan ==
+  ## == Cancan ==
   config.authorize_with :cancan
 
   ## == Pundit ==
   # config.authorize_with :pundit
 
   ## == PaperTrail ==
-  # config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
+  # config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail = 3.0.0
 
   ### More at https://github.com/sferik/rails_admin/wiki/Base-configuration
 
   ## == Gravatar integration ==
   ## To disable Gravatar integration in Navigation Bar set to false
-  # config.show_gravatar = true
+  # config.show_gravatar true
+
+  config.navigation_static_links = {
+    'OneBitCode' = 'https://onebitcode.com'
+  }
+  config.navigation_static_label = "Lins Úteis"
+
+  config.main_app_name = ["Representantes Comerciais", ""]
 
   config.model Sale do
+    navigation_icon 'fa fa-money'
     create do
       field  :client
       field  :sale_date
@@ -102,6 +113,25 @@ RailsAdmin.config do |config|
     end
   end
 
+
+  config.model Discount do
+    parent Product
+  end
+
+  config.model Sale do
+    parent User
+    weight -2
+  end
+
+  config.model Comission do
+    parent User
+    weight -1
+  end
+
+  config.model Client do
+    parent User
+  end
+
   config.model ProductQuantity do
     visible false
   end
@@ -124,6 +154,7 @@ RailsAdmin.config do |config|
     end
   end
 
+
   config.actions do
     dashboard                     # mandatory
     index                         # mandatory
@@ -134,6 +165,9 @@ RailsAdmin.config do |config|
     edit
     delete
     show_in_app
+    pdf do
+      only User
+    end
 
     ## With an audit adapter, you can add:
     # history_index

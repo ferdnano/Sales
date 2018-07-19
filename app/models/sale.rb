@@ -19,10 +19,11 @@ class Sale < ApplicationRecord
     end
 
     # Verifica se já existe uma comissão, caso sim atualiza, caso não cria uma nova.
-    if self.comission.present?
-      self.comission.update(value: (calc * 0.1), status: :pending)
-    else
-      Comission.create(value: (calc * 0.1), user: self.user, sale: self, status: :pending)
-    end
+    #if self.comission.present?
+    #  self.comission.update(value: (calc * 0.1), status: :pending)
+    #else
+    #  Comission.create(value: (calc * 0.1), user: self.user, sale: self, status: :pending)
+    #end
+    self.update_column(:finalprice, calc)
   end
 end
